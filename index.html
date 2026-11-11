@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧刷題學習系統</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#095078',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .btn-hover-effect {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-hover-effect:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- 頂部導覽列 -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showHomeScreen()">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
+                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-slate-800">刷題檢測系統</h1>
+                    <p class="text-xs text-slate-500" id="dataset-status">載入中...</p>
+                </div>
+            </div>
+            <button id="btn-home" onclick="showHomeScreen()" class="hidden px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 border border-slate-200 transition">
+                <i class="fa-solid fa-house mr-1.5"></i>回首頁
+            </button>
+        </div>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="max-w-4xl mx-auto px-4 py-6 w-full flex-grow">
+
+        <!-- ==================== 1. 首頁 / 模式選擇 ==================== -->
+        <section id="screen-home" class="space-y-6">
+            <!-- Banner -->
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-600 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10 max-w-xl">
+                    <span class="bg-white/20 backdrop-blur-md text-xs px-3 py-1 rounded-full font-medium tracking-wide">考前強化神器</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold mt-3 mb-2">準備好提升答題正確率了嗎？</h2>
+                    <p class="text-sky-100 text-sm md:text-base mb-4">支援是非與選擇題高效刷題，答錯即刻檢視詳解，隨時補強弱點章節。</p>
+                </div>
+                <i class="fa-solid fa-brain absolute -right-4 -bottom-8 text-9xl opacity-10 text-white pointer-events-none"></i>
+            </div>
+
+            <!-- 模式選擇表單 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-6">
+                <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center">
+                    <i class="fa-solid fa-sliders text-sky-500 mr-2"></i>設定刷題模式
+                </h3>
+
+                <!-- 題型模式 -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">1. 選擇題型模式</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <label class="relative flex flex-col p-4 border-2 rounded-xl cursor-pointer hover:border-sky-500 transition has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50/50">
+                            <input type="radio" name="type-mode" value="ALL" checked class="hidden">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-800">全題庫混合</span>
+                                <i class="fa-solid fa-[#0284c7] fa-layer-group text-sky-500"></i>
+                            </div>
+                            <span class="text-xs text-slate-500">包含是非題與選擇題</span>
+                        </label>
+                        <label class="relative flex flex-col p-4 border-2 rounded-xl cursor-pointer hover:border-sky-500 transition has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50/50">
+                            <input type="radio" name="type-mode" value="TF" class="hidden">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-800">是非題模式</span>
+                                <i class="fa-solid fa-circle-check text-sky-500"></i>
+                            </div>
+                            <span class="text-xs text-slate-500" id="count-tf">僅專攻 O / X 是非題</span>
+                        </label>
+                        <label class="relative flex flex-col p-4 border-2 rounded-xl cursor-pointer hover:border-sky-500 transition has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50/50">
+                            <input type="radio" name="type-mode" value="MC" class="hidden">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-800">選擇題模式</span>
+                                <i class="fa-solid fa-list-check text-sky-500"></i>
+                            </div>
+                            <span class="text-xs text-slate-500" id="count-mc">僅專攻 A, B, C, D 選擇題</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 答題機制 & 章節篩選 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">2. 出題順序</label>
+                        <select id="select-order" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium">
+                            <option value="random">🎲 隨機抽題刷題</option>
+                            <option value="sequence">🔢 依題號順序刷題</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">3. 章節/單元篩選</label>
+                        <select id="select-chapter" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium">
+                            <option value="ALL">📚 全部章節 (全部題目)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 開始刷題按鈕 -->
+                <button onclick="startQuiz('normal')" class="w-full py-4 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-bold rounded-xl text-lg shadow-lg shadow-sky-500/25 btn-hover-effect flex items-center justify-center space-x-2">
+                    <span>開始刷題</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- 錯題強化區塊 -->
+            <div class="bg-amber-50 rounded-2xl p-6 border border-amber-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-start space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base">錯題強化庫</h4>
+                        <p class="text-sm text-slate-600 mt-0.5">系統自動累積你曾答錯的題目，方便進行考前定點突破。</p>
+                        <p class="text-xs font-semibold text-amber-700 mt-1" id="wrong-count-info">目前錯題庫共有 0 題</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="clearWrongQuestions()" class="px-3 py-2 text-xs text-slate-500 hover:text-red-600 transition">清空紀錄</button>
+                    <button onclick="startQuiz('wrong')" id="btn-start-wrong" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-sm shadow-md transition whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
+                        進入錯題複習
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== 2. 刷題答題介面 ==================== -->
+        <section id="screen-quiz" class="hidden space-y-4">
+            <!-- 上方數據狀態欄 -->
+            <div class="grid grid-cols-3 gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center">
+                <div>
+                    <div class="text-xs text-slate-400 font-medium">已答 / 總數</div>
+                    <div class="text-lg font-bold text-slate-700" id="stat-progress">0 / 0</div>
+                </div>
+                <div class="border-x border-slate-100">
+                    <div class="text-xs text-slate-400 font-medium">正確率</div>
+                    <div class="text-lg font-bold text-sky-600" id="stat-accuracy">0%</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-400 font-medium">連續答對</div>
+                    <div class="text-lg font-bold text-amber-500 flex items-center justify-center space-x-1">
+                        <i class="fa-solid fa-fire text-sm"></i>
+                        <span id="stat-streak">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 進度條 -->
+            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                <div id="progress-bar" class="bg-sky-500 h-full transition-all duration-300 w-0"></div>
+            </div>
+
+            <!-- 主題目卡片 -->
+            <div id="question-card" class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200/90 transition-all">
+                <!-- 標籤 info -->
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span id="badge-chapter" class="bg-sky-100 text-sky-700 text-xs font-bold px-2.5 py-1 rounded-md">章節載入中</span>
+                        <span id="badge-type" class="bg-purple-100 text-purple-700 text-xs font-bold px-2.5 py-1 rounded-md">是非題</span>
+                    </div>
+                    <span id="badge-difficulty" class="text-xs font-medium px-2.5 py-1 rounded-md bg-slate-100 text-slate-600">難易度：中等</span>
+                </div>
+
+                <!-- 題目本文 -->
+                <div class="text-lg md:text-xl font-bold text-slate-800 leading-relaxed mb-6" id="question-text">
+                    題目載入中...
+                </div>
+
+                <!-- 選項觸發區 (是非題) -->
+                <div id="options-tf" class="grid grid-cols-2 gap-4 hidden">
+                    <button onclick="submitAnswer('O')" class="tf-btn py-8 md:py-10 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center hover:border-emerald-500 hover:bg-emerald-50/50 transition group btn-hover-effect">
+                        <span class="text-5xl md:text-6xl font-extrabold text-emerald-500 group-hover:scale-110 transition-transform">O</span>
+                        <span class="text-sm font-bold text-slate-500 mt-2">正確 (True)</span>
+                    </button>
+                    <button onclick="submitAnswer('X')" class="tf-btn py-8 md:py-10 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center hover:border-rose-500 hover:bg-rose-50/50 transition group btn-hover-effect">
+                        <span class="text-5xl md:text-6xl font-extrabold text-rose-500 group-hover:scale-110 transition-transform">X</span>
+                        <span class="text-sm font-bold text-slate-500 mt-2">錯誤 (False)</span>
+                    </button>
+                </div>
+
+                <!-- 選項觸發區 (選擇題) -->
+                <div id="options-mc" class="space-y-3 hidden">
+                    <!-- 由 JS 動態繪製 -->
+                </div>
+
+                <!-- 回饋提示區塊 -->
+                <div id="feedback-box" class="hidden mt-6 p-4 rounded-xl border">
+                    <div class="flex items-center space-x-3">
+                        <div id="feedback-icon" class="text-2xl"></div>
+                        <div id="feedback-title" class="font-bold text-base"></div>
+                    </div>
+                </div>
+
+                <!-- 答錯控制按鈕列 (詳解 / 下一題) -->
+                <div id="action-bar" class="mt-6 flex flex-wrap items-center justify-end gap-3 hidden">
+                    <button id="btn-explain" onclick="toggleExplanation()" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-bold transition flex items-center space-x-1.5 shadow-sm">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>檢視詳解</span>
+                    </button>
+                    <button onclick="nextQuestion()" class="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-bold transition flex items-center space-x-1.5 shadow-md shadow-sky-500/20">
+                        <span>下一題</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- 詳解彈出/展開面板 -->
+                <div id="explanation-panel" class="hidden mt-4 p-5 bg-amber-50/80 border border-amber-200 rounded-2xl space-y-2">
+                    <div class="flex items-center justify-between font-bold text-amber-900 border-b border-amber-200/60 pb-2">
+                        <span class="flex items-center"><i class="fa-solid fa-book-open mr-2 text-amber-600"></i>詳細解析</span>
+                        <span id="correct-answer-display" class="text-sm bg-amber-200/60 px-2.5 py-0.5 rounded text-amber-900">正確答案：--</span>
+                    </div>
+                    <p id="explanation-text" class="text-slate-700 text-sm md:text-base leading-relaxed pt-1">
+                        無詳細解析。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 3. 測驗完成結果頁 ==================== -->
+        <section id="screen-result" class="hidden text-center space-y-6 py-8">
+            <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 max-w-lg mx-auto space-y-6">
+                <div class="w-20 h-20 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-4xl shadow-inner">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800">完成本輪刷題！</h2>
+                    <p class="text-sm text-slate-500 mt-1">持續堅持，積少成多！</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <div>
+                        <div class="text-xs text-slate-400">總答題數</div>
+                        <div class="text-xl font-bold text-slate-700" id="result-total">0</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">總正確率</div>
+                        <div class="text-xl font-bold text-emerald-600" id="result-accuracy">0%</div>
+                    </div>
+                </div>
+
+                <button onclick="showHomeScreen()" class="w-full py-3.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow-lg shadow-sky-500/20 transition">
+                    返回首頁 / 再刷一次
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        智慧刷題 Web App &copy; 2026 | 可部署於 GitHub Pages
+    </footer>
+
+    <!-- 嘗試載入外部題庫檔 questions.js -->
+    <script src="questions.js"></script>
+
+    <!-- 主系統程式邏輯 -->
+    <script>
+        // ==================== 備用/預設示範題庫 (若未載入外部 questions.js 時自動使用) ====================
+        const DEMO_QUIZ_DATA = [
+            {
+                id: "TF-001",
+                type: "TF",
+                chapter: "第一章：網路基礎與架構",
+                difficulty: "簡單",
+                question: "HTTP 協定預設傳輸埠號 (Port) 是 80，而 HTTPS 預設為 443。",
+                options: ["O", "X"],
+                answer: "O",
+                explanation: "HTTP 使用 Port 80，HTTPS 為加密傳輸協定，預設使用 Port 443。"
+            },
+            {
+                id: "TF-002",
+                type: "TF",
+                chapter: "第一章：網路基礎與架構",
+                difficulty: "中等",
+                question: "GitHub Pages 支援直接在用戶端執行 Python 後端程式碼與 MySQL 資料庫連結。",
+                options: ["O", "X"],
+                answer: "X",
+                explanation: "GitHub Pages 僅為靜態網頁託管服務，僅支援 HTML, CSS, JavaScript 等前端檔案執行。"
+            },
+            {
+                id: "MC-001",
+                type: "MC",
+                chapter: "第二章：JavaScript 前端開發",
+                difficulty: "中等",
+                question: "在 JavaScript 中，下列何者用於宣告一個不可重新指定數值的常數？",
+                options: ["var", "let", "const", "static"],
+                answer: "C",
+                explanation: "const 用於宣告區塊作用域的常數，該變數不可重新指派 (Re-assign)。"
+            },
+            {
+                id: "MC-002",
+                type: "MC",
+                chapter: "第二章：JavaScript 前端開發",
+                difficulty: "簡單",
+                question: "瀏覽器端用來在本地永久儲存簡單鍵值 (Key-Value) 資料的 API 為何？",
+                options: ["Cookie", "LocalStorage", "SessionStorage", "IndexedDB"],
+                answer: "B",
+                explanation: "LocalStorage 提供了沒有過期時間限制的 Web 儲存空間。"
+            }
+        ];
+
+        // ==================== 全域變數狀態 ====================
+        let activeQuizPool = [];     // 目前載入的題庫
+        let currentQuestions = [];  // 當前抽出的題目清單
+        let currentIndex = 0;       // 目前第幾題
+        let scoreStats = {
+            answered: 0,
+            correct: 0,
+            streak: 0
+        };
+        let wrongQuestions = JSON.parse(localStorage.getItem('quiz_wrong_db') || '[]');
+        let isAnsweredCurrent = false;
+
+        // ==================== 初始化 ====================
+        window.addEventListener('DOMContentLoaded', () => {
+            initDatabase();
+            updateWrongInfo();
+        });
+
+        // 載入與初始化題庫
+        function initDatabase() {
+            const statusEl = document.getElementById('dataset-status');
+            
+            // 檢查 window.QUIZ_DATA 是否由 external questions.js 提供
+            if (window.QUIZ_DATA && Array.isArray(window.QUIZ_DATA) && window.QUIZ_DATA.length > 0) {
+                activeQuizPool = window.QUIZ_DATA;
+                statusEl.textContent = `已載入外部題庫 (${activeQuizPool.length} 題)`;
+            } else {
+                activeQuizPool = DEMO_QUIZ_DATA;
+                statusEl.textContent = `已載入內建備用題庫 (${activeQuizPool.length} 題)`;
+            }
+
+            // 更新選擇題與是非題數量統計
+            const tfCount = activeQuizPool.filter(q => q.type === 'TF').length;
+            const mcCount = activeQuizPool.filter(q => q.type === 'MC').length;
+            document.getElementById('count-tf').textContent = `包含 ${tfCount} 題`;
+            document.getElementById('count-mc').textContent = `包含 ${mcCount} 題`;
+
+            // 選項動態生成章節下拉選單
+            populateChapters();
+        }
+
+        // 動態整理章節選單
+        function populateChapters() {
+            const selectChapter = document.getElementById('select-chapter');
+            selectChapter.innerHTML = '<option value="ALL">📚 全部章節 (全部題目)</option>';
+            
+            const chapters = [...new Set(activeQuizPool.map(q => q.chapter || '一般題庫'))];
+            chapters.forEach(ch => {
+                const opt = document.createElement('option');
+                opt.value = ch;
+                opt.textContent = ch;
+                selectChapter.appendChild(opt);
+            });
+        }
+
+        // ==================== 畫面切換邏輯 ====================
+        function showHomeScreen() {
+            document.getElementById('screen-home').classList.remove('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('btn-home').classList.add('hidden');
+            updateWrongInfo();
+        }
+
+        function showQuizScreen() {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('btn-home').classList.remove('hidden');
+        }
+
+        function showResultScreen() {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+            
+            document.getElementById('result-total').textContent = scoreStats.answered;
+            const accuracy = scoreStats.answered > 0 ? Math.round((scoreStats.correct / scoreStats.answered) * 100) : 0;
+            document.getElementById('result-accuracy').textContent = accuracy + '%';
+        }
+
+        // ==================== 開始刷題 ====================
+        function startQuiz(mode) {
+            const typeMode = document.querySelector('input[name="type-mode"]:checked').value;
+            const orderMode = document.getElementById('select-order').value;
+            const selectedChapter = document.getElementById('select-chapter').value;
+
+            if (mode === 'wrong') {
+                if (wrongQuestions.length === 0) {
+                    alert('目前沒有錯題紀錄！');
+                    return;
+                }
+                currentQuestions = [...wrongQuestions];
+            } else {
+                // 篩選型別與章節
+                currentQuestions = activeQuizPool.filter(q => {
+                    const matchType = (typeMode === 'ALL') || (q.type === typeMode);
+                    const matchChapter = (selectedChapter === 'ALL') || (q.chapter === selectedChapter);
+                    return matchType && matchChapter;
+                });
+            }
+
+            if (currentQuestions.length === 0) {
+                alert('沒有符合條件的題目！請重新挑選條件。');
+                return;
+            }
+
+            // 出題順序洗牌 (隨機模式)
+            if (orderMode === 'random' && mode !== 'wrong') {
+                currentQuestions = [...currentQuestions].sort(() => Math.random() - 0.5);
+            }
+
+            // 重置計分狀態
+            currentIndex = 0;
+            scoreStats = { answered: 0, correct: 0, streak: 0 };
+            
+            showQuizScreen();
+            renderQuestion();
+        }
+
+        // ==================== 渲染題目卡片 ====================
+        function renderQuestion() {
+            if (currentIndex >= currentQuestions.length) {
+                showResultScreen();
+                return;
+            }
+
+            isAnsweredCurrent = false;
+            const q = currentQuestions[currentIndex];
+
+            // 狀態區重置
+            document.getElementById('explanation-panel').classList.add('hidden');
+            document.getElementById('action-bar').classList.add('hidden');
+            document.getElementById('feedback-box').classList.add('hidden');
+
+            // 呈現頂部統計
+            document.getElementById('stat-progress').textContent = `${currentIndex + 1} / ${currentQuestions.length}`;
+            const accPercent = scoreStats.answered > 0 ? Math.round((scoreStats.correct / scoreStats.answered) * 100) : 0;
+            document.getElementById('stat-accuracy').textContent = `${accPercent}%`;
+            document.getElementById('stat-streak').textContent = scoreStats.streak;
+
+            // 進度條長度
+            const progressRatio = ((currentIndex) / currentQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressRatio}%`;
+
+            // 題目 Header Badges
+            document.getElementById('badge-chapter').textContent = q.chapter || '一般章節';
+            document.getElementById('badge-type').textContent = q.type === 'TF' ? '是非題' : '選擇題';
+            document.getElementById('badge-difficulty').textContent = `難易度：${q.difficulty || '普通'}`;
+            document.getElementById('question-text').textContent = `${currentIndex + 1}. ${q.question}`;
+
+            // 根據題型顯示選項按鈕
+            const tfContainer = document.getElementById('options-tf');
+            const mcContainer = document.getElementById('options-mc');
+
+            if (q.type === 'TF') {
+                tfContainer.classList.remove('hidden');
+                mcContainer.classList.add('hidden');
+                resetTfButtons();
+            } else {
+                tfContainer.classList.add('hidden');
+                mcContainer.classList.remove('hidden');
+                renderMcOptions(q);
+            }
+        }
+
+        // 重置是非題按鈕樣式
+        function resetTfButtons() {
+            const btns = document.querySelectorAll('.tf-btn');
+            btns.forEach(btn => {
+                btn.disabled = false;
+                btn.className = "tf-btn py-8 md:py-10 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center hover:border-sky-500 hover:bg-sky-50/50 transition group btn-hover-effect";
+            });
+        }
+
+        // 繪製選擇題按鈕選項
+        function renderMcOptions(q) {
+            const mcContainer = document.getElementById('options-mc');
+            mcContainer.innerHTML = '';
+
+            const prefixes = ['A', 'B', 'C', 'D'];
+            q.options.forEach((optText, idx) => {
+                const optKey = prefixes[idx];
+                const btn = document.createElement('button');
+                btn.onclick = () => submitAnswer(optKey);
+                btn.className = `mc-btn w-full p-4 border-2 border-slate-200 rounded-xl flex items-center space-x-3 text-left hover:border-sky-500 hover:bg-sky-50/50 transition btn-hover-effect`;
+                btn.dataset.key = optKey;
+
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-sm border border-slate-200 shrink-0 key-badge">${optKey}</span>
+                    <span class="text-base text-slate-700 font-medium">${optText}</span>
+                `;
+                mcContainer.appendChild(btn);
+            });
+        }
+
+        // ==================== 答題驗證機制 ====================
+        function submitAnswer(userAns) {
+            if (isAnsweredCurrent) return;
+            isAnsweredCurrent = true;
+
+            const q = currentQuestions[currentIndex];
+            const isCorrect = (userAns.toString().toUpperCase() === q.answer.toString().toUpperCase());
+
+            scoreStats.answered++;
+
+            if (isCorrect) {
+                scoreStats.correct++;
+                scoreStats.streak++;
+                showFeedback(true, "答對了！非常優秀！");
+                highlightAnswerButtons(q, userAns, true);
+                
+                // 答對時自動/快速準備進入下一題 (延遲1秒或直接手動按)
+                setTimeout(() => {
+                    if (isAnsweredCurrent && isCorrect) nextQuestion();
+                }, 1100);
+            } else {
+                scoreStats.streak = 0;
+                showFeedback(false, "答錯了！請檢視下方詳解補強。");
+                highlightAnswerButtons(q, userAns, false);
+                saveWrongQuestion(q);
+
+                // 顯示詳解按鈕與控制列
+                document.getElementById('action-bar').classList.remove('hidden');
+            }
+
+            // 禁用目前選項按鈕
+            disableAllOptions();
+        }
+
+        // 高亮選項顏色
+        function highlightAnswerButtons(q, userAns, isCorrect) {
+            if (q.type === 'TF') {
+                const btns = document.querySelectorAll('.tf-btn');
+                btns.forEach(btn => {
+                    const isO = btn.innerText.includes('O');
+                    const key = isO ? 'O' : 'X';
+                    if (key === q.answer) {
+                        btn.classList.add('border-emerald-500', 'bg-emerald-50');
+                    } else if (key === userAns && !isCorrect) {
+                        btn.classList.add('border-rose-500', 'bg-rose-50');
+                    }
+                });
+            } else {
+                const btns = document.querySelectorAll('.mc-btn');
+                btns.forEach(btn => {
+                    const key = btn.dataset.key;
+                    if (key === q.answer) {
+                        btn.classList.add('border-emerald-500', 'bg-emerald-50');
+                        btn.querySelector('.key-badge').classList.add('bg-emerald-500', 'text-white');
+                    } else if (key === userAns && !isCorrect) {
+                        btn.classList.add('border-rose-500', 'bg-rose-50');
+                        btn.querySelector('.key-badge').classList.add('bg-rose-500', 'text-white');
+                    }
+                });
+            }
+        }
+
+        function disableAllOptions() {
+            document.querySelectorAll('.tf-btn, .mc-btn').forEach(b => b.disabled = true);
+        }
+
+        // 顯示對錯 Banner
+        function showFeedback(isCorrect, msg) {
+            const box = document.getElementById('feedback-box');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+
+            box.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-800', 'bg-rose-50', 'border-rose-200', 'text-rose-800');
+
+            if (isCorrect) {
+                box.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-800');
+                icon.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i>`;
+            } else {
+                box.classList.add('bg-rose-50', 'border-rose-200', 'text-rose-800');
+                icon.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-500"></i>`;
+            }
+            title.textContent = msg;
+        }
+
+        // 展開/收合詳解
+        function toggleExplanation() {
+            const panel = document.getElementById('explanation-panel');
+            const q = currentQuestions[currentIndex];
+
+            document.getElementById('correct-answer-display').textContent = `正確答案：${q.answer}`;
+            document.getElementById('explanation-text').textContent = q.explanation || "此題目前無詳細解析補充。";
+
+            panel.classList.toggle('hidden');
+        }
+
+        // 下一題
+        function nextQuestion() {
+            currentIndex++;
+            renderQuestion();
+        }
+
+        // ==================== 錯題庫 LocalStorage 處理 ====================
+        function saveWrongQuestion(q) {
+            const exists = wrongQuestions.some(item => item.id === q.id || item.question === q.question);
+            if (!exists) {
+                wrongQuestions.push(q);
+                localStorage.setItem('quiz_wrong_db', JSON.stringify(wrongQuestions));
+            }
+        }
+
+        function updateWrongInfo() {
+            const infoText = document.getElementById('wrong-count-info');
+            const btnWrong = document.getElementById('btn-start-wrong');
+            infoText.textContent = `目前錯題庫共有 ${wrongQuestions.length} 題`;
+
+            if (wrongQuestions.length === 0) {
+                btnWrong.disabled = true;
+            } else {
+                btnWrong.disabled = false;
+            }
+        }
+
+        function clearWrongQuestions() {
+            if (confirm('確定要清空所有的錯題紀錄嗎？')) {
+                wrongQuestions = [];
+                localStorage.removeItem('quiz_wrong_db');
+                updateWrongInfo();
+            }
+        }
+    </script>
+</body>
+</html>
