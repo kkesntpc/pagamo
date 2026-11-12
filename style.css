@@ -238,10 +238,84 @@ input:focus-visible {
   margin-bottom: 20px;
 }
 
-/* 模式選擇網格 (RWD 自適應欄數) */
+/* 主頁籤分流導航列 */
+.tabs-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 6px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-card);
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  min-height: 46px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  background-color: var(--bg-card-secondary);
+  color: var(--text-main);
+}
+
+.tab-btn.active {
+  background-color: var(--brand-primary);
+  color: var(--brand-text);
+  box-shadow: 0 2px 6px rgba(2, 86, 155, 0.22);
+}
+
+.tab-count-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  background-color: rgba(148, 163, 184, 0.25);
+  color: inherit;
+}
+
+.tab-btn.active .tab-count-pill {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: var(--brand-text);
+}
+
+.section-intro {
+  margin-bottom: 18px;
+}
+
+.section-intro h2 {
+  font-size: 1.35rem;
+  margin-bottom: 6px;
+}
+
+.section-intro p {
+  color: var(--text-muted);
+  font-size: 0.94rem;
+}
+
+/* 模式選擇網格 (桌機 3x2 對稱排列，手機 2x3) */
 .mode-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin: 16px 0;
 }

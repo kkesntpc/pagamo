@@ -53,7 +53,13 @@
   const themeIcon = document.getElementById("theme-icon");
   const themeLabel = document.getElementById("theme-label");
 
-  const startSection = document.getElementById("start-section");
+  const mainTabsNav = document.getElementById("main-tabs-nav");
+  const tabBtnPractice = document.getElementById("tab-btn-practice");
+  const tabBtnHistory = document.getElementById("tab-btn-history");
+  const tabHistoryBadge = document.getElementById("tab-history-badge");
+
+  const startSection = document.getElementById("tab-panel-practice");
+  const historySection = document.getElementById("tab-panel-history");
   const quizSection = document.getElementById("quiz-section");
   const resultSection = document.getElementById("result-section");
   const historyDetailSection = document.getElementById("history-detail-section");
@@ -308,7 +314,9 @@
     totalTimeAllocated = count * 10;
     timeRemaining = totalTimeAllocated;
 
+    mainTabsNav.classList.add("hidden");
     startSection.classList.add("hidden");
+    historySection.classList.add("hidden");
     resultSection.classList.add("hidden");
     historyDetailSection.classList.add("hidden");
     quizSection.classList.remove("hidden");
@@ -681,6 +689,7 @@
 
     const overallAcc = totalAnswered > 0 ? ((totalCorrect / totalAnswered) * 100).toFixed(1) + "%" : "0%";
     document.getElementById("kpi-sessions").textContent = totalSessions;
+    if (tabHistoryBadge) tabHistoryBadge.textContent = totalSessions;
     document.getElementById("kpi-total-q").textContent = totalAnswered;
     document.getElementById("kpi-overall-acc").textContent = overallAcc;
     document.getElementById("kpi-perfect-count").textContent = perfectRecords.length;
@@ -832,7 +841,9 @@
     if (!rec) return;
 
     activeDetailRecord = rec;
+    mainTabsNav.classList.add("hidden");
     startSection.classList.add("hidden");
+    historySection.classList.add("hidden");
     resultSection.classList.add("hidden");
     quizSection.classList.add("hidden");
     historyDetailSection.classList.remove("hidden");
@@ -905,24 +916,49 @@
     initModeSelection();
     renderLearningPortfolio();
 
-    function goHome() {
+    function switchTab(targetTab) {
+      mainTabsNav.classList.remove("hidden");
+      quizSection.classList.add("hidden");
+      resultSection.classList.add("hidden");
+      historyDetailSection.classList.add("hidden");
+
+      if (targetTab === "history") {
+        tabBtnPractice.classList.remove("active");
+        tabBtnPractice.setAttribute("aria-selected", "false");
+        tabBtnHistory.classList.add("active");
+        tabBtnHistory.setAttribute("aria-selected", "true");
+
+        startSection.classList.add("hidden");
+        historySection.classList.remove("hidden");
+        renderLearningPortfolio();
+      } else {
+        tabBtnHistory.classList.remove("active");
+        tabBtnHistory.setAttribute("aria-selected", "false");
+        tabBtnPractice.classList.add("active");
+        tabBtnPractice.setAttribute("aria-selected", "true");
+
+        historySection.classList.add("hidden");
+        startSection.classList.remove("hidden");
+      }
+    }
+
+    function goHome(targetTab = "practice") {
       if (!quizSection.classList.contains("hidden")) {
-        if (!confirm("測驗仍在進行中，確定要中斷並返回首頁嗎？（本次進度將不會列入紀錄）")) {
+        if (!confirm("測驗仍在進行中，確定要中斷並返回嗎？（本次進度將不會列入紀錄）")) {
           return;
         }
         clearInterval(examTimer);
       }
-      quizSection.classList.add("hidden");
-      resultSection.classList.add("hidden");
-      historyDetailSection.classList.add("hidden");
-      startSection.classList.remove("hidden");
-      renderLearningPortfolio();
+      switchTab(targetTab);
     }
 
-    document.getElementById("brand-home-btn").addEventListener("click", goHome);
+    tabBtnPractice.addEventListener("click", () => switchTab("practice"));
+    tabBtnHistory.addEventListener("click", () => switchTab("history"));
+
+    document.getElementById("brand-home-btn").addEventListener("click", () => goHome("practice"));
     document.getElementById("retry-exam-btn").addEventListener("click", startExam);
-    document.getElementById("back-home-btn").addEventListener("click", goHome);
-    document.getElementById("detail-back-btn").addEventListener("click", goHome);
+    document.getElementById("back-home-btn").addEventListener("click", () => goHome("history"));
+    document.getElementById("detail-back-btn").addEventListener("click", () => goHome("history"));
 
     // 結算畫面「只顯示錯題」切換
     document.getElementById("filter-wrong-only").addEventListener("change", (e) => {

@@ -3,21 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>無障礙題庫練習與學習歷程驗證系統</title>
+  <title>題庫練習與認證系統</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- 無障礙快速跳至主內容 -->
-  <a href="#main-content" class="skip-link no-print">跳至主要測驗內容</a>
+  <a href="#main-content" class="skip-link no-print">跳至主要內容</a>
 
   <div class="app-container no-print">
 
-    <!-- 頂部導航列 (點擊標題可隨時回首頁，右側為日夜模式切換) -->
+    <!-- 頂部導航列 (點擊標題回首頁，右側為日夜模式切換) -->
     <header class="navbar" role="banner">
-      <button id="brand-home-btn" class="brand-title-btn" type="button" aria-label="返回首頁與模式選單">
+      <button id="brand-home-btn" class="brand-title-btn" type="button" aria-label="返回首頁">
         <span aria-hidden="true">🎯</span>
-        <span class="brand-heading">無障礙題庫練習與認證系統</span>
+        <span class="brand-heading">題庫練習與認證系統</span>
       </button>
       <div class="nav-actions">
         <button id="theme-toggle-btn" class="theme-toggle-btn" type="button" aria-label="切換日間或夜間模式">
@@ -27,33 +26,44 @@
       </div>
     </header>
 
+    <!-- 主頁籤切換列 (僅在非作答畫面顯示，讓畫面乾淨不雜亂) -->
+    <nav id="main-tabs-nav" class="tabs-nav" role="tablist" aria-label="功能分頁">
+      <button id="tab-btn-practice" class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="tab-panel-practice">
+        <span>📝 開始測驗</span>
+      </button>
+      <button id="tab-btn-history" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="tab-panel-history">
+        <span>📊 學習歷程與驗證</span>
+        <span id="tab-history-badge" class="tab-count-pill">0</span>
+      </button>
+    </nav>
+
     <!-- 主要操作區 -->
     <main id="main-content" role="main">
 
-      <!-- 1. 測驗設定與首頁 (模式選擇、學習歷程與答對率總覽、滿分橫向紀錄、可勾選驗證列印) -->
-      <section id="start-section" class="card" aria-label="測驗設定">
-        <h2 style="font-size: 1.4rem; margin-bottom: 8px;">選擇練習或認證模式</h2>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
-          整體倒數計時（單題 10 秒配時）。練習模式看詳解時<strong>自動暫停計時</strong>；正式 50 題認證測驗則全程持續計時。答對自動跳下一題，答錯展開詳解並於頂部顯示「下一題」。
-        </p>
+      <!-- ==================== 頁籤 1：開始測驗設定 ==================== -->
+      <section id="tab-panel-practice" class="card" role="tabpanel" aria-labelledby="tab-btn-practice">
+        <div class="section-intro">
+          <h2>選擇練習或認證模式</h2>
+          <p>單題 10 秒配時整體倒數；練習模式看詳解自動暫停計時，正式認證測驗全程持續計時。</p>
+        </div>
 
-        <!-- 模式切換 (20 / 25 / 40 / 50 題練習 + 🚀 展望未來專題 + 🏆 認證測驗模式) -->
+        <!-- 模式切換 (6 個模式整齊排列：桌機 3x2 / 手機 2x3) -->
         <div class="mode-grid" role="group" aria-label="測驗模式選擇">
           <button type="button" class="mode-btn" data-mode-type="practice" data-count="20" aria-pressed="false">
             <span class="mode-title">20 題練習</span>
-            <span class="mode-desc">整體限時 03:20</span>
+            <span class="mode-desc">限時 03:20</span>
           </button>
           <button type="button" class="mode-btn" data-mode-type="practice" data-count="25" aria-pressed="false">
             <span class="mode-title">25 題練習</span>
-            <span class="mode-desc">整體限時 04:10</span>
+            <span class="mode-desc">限時 04:10</span>
           </button>
           <button type="button" class="mode-btn" data-mode-type="practice" data-count="40" aria-pressed="false">
             <span class="mode-title">40 題練習</span>
-            <span class="mode-desc">整體限時 06:40</span>
+            <span class="mode-desc">限時 06:40</span>
           </button>
           <button type="button" class="mode-btn active" data-mode-type="practice" data-count="50" aria-pressed="true">
             <span class="mode-title">50 題練習</span>
-            <span class="mode-desc">整體限時 08:20</span>
+            <span class="mode-desc">限時 08:20</span>
           </button>
           <button type="button" class="mode-btn future-mode-btn" data-mode-type="future" data-count="30" aria-pressed="false">
             <span class="mode-title">🚀 展望未來</span>
@@ -67,34 +77,33 @@
 
         <!-- 展望未來模式說明提示 -->
         <div id="future-notice-box" class="future-notice-box hidden" role="status">
-          <strong>🚀 展望未來專題（收錄 100 題全新前瞻題庫）：</strong>聚焦 2030～2050 淨零轉型、CBAM 碳關稅、AI 綠色運算、智慧電網、自然碳匯、數位產品護照與氣候調適韌性等未來核心趨勢，隨機抽選 30 題（整體限時 5 分鐘）。
+          <strong>🚀 展望未來專題（100 題前瞻新題庫）：</strong>聚焦 2030～2050 淨零轉型、CBAM 碳關稅、AI 綠色運算、智慧電網、自然碳匯與氣候調適韌性，隨機抽選 30 題（限時 5 分鐘）。
         </div>
 
         <!-- 認證模式說明提示 -->
         <div id="cert-notice-box" class="cert-notice-box hidden" role="status">
-          <strong>🏆 正式認證測驗規則：</strong>系統將從全題庫（含展望未來新題共 1,215 題）隨機抽選 50 題（混合易、中、難），整體作答時間 <strong>8 分 20 秒</strong>。總答對率達 <strong>80%（40 題）以上</strong>且未超時，即可獲得「認證合格」紀錄與電子合格證明。
+          <strong>🏆 正式認證測驗規則：</strong>從全題庫（1,215 題）隨機抽選 50 題（混合易、中、難），整體限時 <strong>8 分 20 秒</strong>（看詳解不暫停）。答對率達 <strong>80%（40 題）以上</strong>即頒發合格證明。
         </div>
 
-        <!-- 考生/練習者名稱與原題庫分類篩選 -->
+        <!-- 作答者資訊與分類篩選 -->
         <div class="settings-grid">
           <div class="form-field">
-            <label for="candidate-name">作答者姓名 / 座號：</label>
-            <input type="text" id="candidate-name" class="form-control" placeholder="請輸入姓名或學號（用於記錄與列印驗證）" maxlength="20">
+            <label for="candidate-name">作答者姓名 / 座號</label>
+            <input type="text" id="candidate-name" class="form-control" placeholder="輸入姓名或學號（用於成績驗證）" maxlength="20">
           </div>
 
-          <!-- 練習模式專屬篩選 (原章節分類 + 難度) -->
           <div id="practice-filters-box" style="display: contents;">
             <div id="chapter-filter-wrapper" class="form-field">
-              <label for="chapter-select">原題庫章節 / 主題分類：</label>
+              <label for="chapter-select">主題分類</label>
               <select id="chapter-select" class="form-control">
-                <option value="ALL">📚 全部章節分類（載入中...）</option>
+                <option value="ALL">📚 全部主題分類（載入中...）</option>
               </select>
             </div>
 
             <div class="form-field">
-              <label for="diff-select">題目難度：</label>
+              <label for="diff-select">題目難度</label>
               <select id="diff-select" class="form-control">
-                <option value="ALL">全部混合隨機（易 / 中 / 難）</option>
+                <option value="ALL">全部混合（易 / 中 / 難）</option>
                 <option value="易">基礎 - 易</option>
                 <option value="中">進階 - 中</option>
                 <option value="難">挑戰 - 難</option>
@@ -108,112 +117,104 @@
           <span id="start-btn-text">開始練習（50 題）</span>
           <span aria-hidden="true">➔</span>
         </button>
+      </section>
 
-        <!-- ==================== 學習歷程與答對率回顧專區 ==================== -->
-        <div class="history-section">
-          <div class="history-header-row">
-            <h3 style="font-size: 1.2rem;">📈 學習歷程總覽與答對率統計</h3>
-            <button id="toggle-chapter-stats-btn" class="btn-secondary" style="font-size: 0.85rem; padding: 6px 12px;" type="button" aria-expanded="false">
-              查看各主題答對率分析 ▾
+
+      <!-- ==================== 頁籤 2：學習歷程與答對率驗證 ==================== -->
+      <section id="tab-panel-history" class="card hidden" role="tabpanel" aria-labelledby="tab-btn-history">
+        <div class="history-header-row">
+          <h2 style="font-size: 1.3rem;">📈 學習歷程與答對率總覽</h2>
+          <button id="toggle-chapter-stats-btn" class="btn-secondary" style="font-size: 0.88rem; padding: 6px 12px;" type="button" aria-expanded="false">
+            各主題答對率分析 ▾
+          </button>
+        </div>
+
+        <!-- 整體學習歷程 KPI 摘要 -->
+        <div class="portfolio-kpi-grid" aria-label="累計學習統計">
+          <div class="kpi-card">
+            <span id="kpi-sessions" class="kpi-val">0</span>
+            <span class="kpi-lbl">累計測驗次數</span>
+          </div>
+          <div class="kpi-card">
+            <span id="kpi-total-q" class="kpi-val">0</span>
+            <span class="kpi-lbl">累計作答題數</span>
+          </div>
+          <div class="kpi-card">
+            <span id="kpi-overall-acc" class="kpi-val">0%</span>
+            <span class="kpi-lbl">總平均答對率</span>
+          </div>
+          <div class="kpi-card kpi-gold">
+            <span id="kpi-perfect-count" class="kpi-val">0</span>
+            <span class="kpi-lbl">💯 滿分次數</span>
+          </div>
+        </div>
+
+        <!-- 各主題分類累計答對率折疊面板 -->
+        <div id="chapter-stats-panel" class="chapter-stats-panel hidden">
+          <h3 style="font-size: 1rem; margin-bottom: 10px;">📚 各主題章節累計答對率</h3>
+          <div id="chapter-stats-list" class="chapter-stats-list"></div>
+        </div>
+
+        <!-- 滿分（100%）橫向榮譽紀錄列 -->
+        <div id="perfect-streak-section" class="perfect-streak-box hidden">
+          <div class="perfect-streak-header">
+            <span>💯 <strong>100% 滿分達成橫向紀錄</strong>（可左右滑動）</span>
+            <button id="select-all-perfect-btn" class="btn-mini-accent" type="button">勾選全部滿分</button>
+          </div>
+          <div id="perfect-horizontal-list" class="perfect-horizontal-strip" role="list" aria-label="100分滿分橫向紀錄"></div>
+        </div>
+
+        <!-- 歷次成績與認證紀錄表格 -->
+        <div class="history-header-row" style="margin-top: 22px;">
+          <h3 style="font-size: 1.15rem;">📊 歷次測驗成績明細</h3>
+          <div class="history-toolbar">
+            <button id="select-all-cert-btn" class="btn-secondary" style="font-size: 0.85rem; padding: 6px 10px;" type="button">勾選認證合格</button>
+            <button id="print-selected-btn" class="btn-print-verify" type="button">
+              <span aria-hidden="true">🖨️</span>
+              <span>列印勾選驗證 (<span id="selected-count-badge">0</span>)</span>
             </button>
+            <button id="clear-history-btn" class="btn-secondary" style="font-size: 0.85rem; padding: 6px 10px;" type="button">清除</button>
           </div>
+        </div>
 
-          <!-- 整體學習歷程KPI摘要 -->
-          <div class="portfolio-kpi-grid" aria-label="累計學習統計">
-            <div class="kpi-card">
-              <span id="kpi-sessions" class="kpi-val">0</span>
-              <span class="kpi-lbl">累計測驗次數</span>
-            </div>
-            <div class="kpi-card">
-              <span id="kpi-total-q" class="kpi-val">0</span>
-              <span class="kpi-lbl">累計作答題數</span>
-            </div>
-            <div class="kpi-card">
-              <span id="kpi-overall-acc" class="kpi-val">0%</span>
-              <span class="kpi-lbl">總平均答對率</span>
-            </div>
-            <div class="kpi-card kpi-gold">
-              <span id="kpi-perfect-count" class="kpi-val">0</span>
-              <span class="kpi-lbl">💯 滿分次數</span>
-            </div>
-          </div>
-
-          <!-- 各主題分類累計答對率折疊面板 -->
-          <div id="chapter-stats-panel" class="chapter-stats-panel hidden">
-            <h4 style="font-size: 1rem; margin-bottom: 10px;">📚 各主題章節累計答對率回顧</h4>
-            <div id="chapter-stats-list" class="chapter-stats-list">
-              <!-- 動態產生各章節進度條與答對率 -->
-            </div>
-          </div>
-
-          <!-- 滿分（100%）橫向榮譽紀錄列 -->
-          <div id="perfect-streak-section" class="perfect-streak-box hidden">
-            <div class="perfect-streak-header">
-              <span>💯 <strong>100% 滿分達成橫向紀錄</strong>（可左右滑動檢視）</span>
-              <button id="select-all-perfect-btn" class="btn-mini-accent" type="button">勾選全部滿分紀錄</button>
-            </div>
-            <div id="perfect-horizontal-list" class="perfect-horizontal-strip" role="list" aria-label="100分滿分橫向紀錄">
-              <!-- 動態產生橫向滿分卡片 -->
-            </div>
-          </div>
-
-          <!-- 歷次成績與認證紀錄表格 (支援勾選並列印驗證紀錄單) -->
-          <div class="history-header-row" style="margin-top: 22px;">
-            <h3 style="font-size: 1.15rem;">📊 歷次測驗與認證成績明細</h3>
-            <div class="history-toolbar">
-              <button id="select-all-cert-btn" class="btn-secondary" style="font-size: 0.85rem; padding: 6px 10px;" type="button">勾選認證合格</button>
-              <button id="print-selected-btn" class="btn-print-verify" type="button">
-                <span aria-hidden="true">🖨️</span>
-                <span>列印勾選驗證紀錄 (<span id="selected-count-badge">0</span>)</span>
-              </button>
-              <button id="clear-history-btn" class="btn-secondary" style="font-size: 0.85rem; padding: 6px 10px;" type="button">清除歷史</button>
-            </div>
-          </div>
-
-          <div class="table-wrapper">
-            <table class="stats-table" aria-label="歷次測驗與認證成績表">
-              <thead>
-                <tr>
-                  <th scope="col" style="width: 44px;">
-                    <input type="checkbox" id="select-all-checkbox" aria-label="全選或取消全選所有紀錄">
-                  </th>
-                  <th scope="col">時間</th>
-                  <th scope="col">作答者</th>
-                  <th scope="col">測驗範圍 / 分類</th>
-                  <th scope="col">得分</th>
-                  <th scope="col">答對率</th>
-                  <th scope="col">耗時</th>
-                  <th scope="col">狀態 / 回顧</th>
-                </tr>
-              </thead>
-              <tbody id="history-tbody">
-                <!-- 動態注入成績資料 -->
-              </tbody>
-            </table>
-          </div>
+        <div class="table-wrapper">
+          <table class="stats-table" aria-label="歷次測驗與認證成績表">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 44px;">
+                  <input type="checkbox" id="select-all-checkbox" aria-label="全選或取消全選所有紀錄">
+                </th>
+                <th scope="col">時間</th>
+                <th scope="col">作答者</th>
+                <th scope="col">測驗範圍</th>
+                <th scope="col">得分</th>
+                <th scope="col">答對率</th>
+                <th scope="col">耗時</th>
+                <th scope="col">狀態 / 回顧</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
         </div>
       </section>
 
 
-      <!-- 2. 測驗進行畫面 (支援整體倒數、頂部下一題按鈕、答錯直接展開詳解) -->
+      <!-- ==================== 測驗進行畫面 ==================== -->
       <section id="quiz-section" class="card hidden" aria-live="polite">
-        <!-- 頂部資訊列：進度、模式標記、難度、下一題按鈕、整體倒數 -->
         <div class="quiz-top-bar">
           <div class="quiz-meta-info">
             <span id="q-progress-text" style="font-weight: 700; font-size: 1.1rem;">載入中...</span>
-            <span id="q-cert-badge" class="badge-tag badge-cert hidden">🏆 認證測驗中</span>
+            <span id="q-cert-badge" class="badge-tag badge-cert hidden">🏆 認證測驗</span>
             <span id="q-future-badge" class="badge-tag badge-future hidden">🚀 展望未來</span>
             <span id="q-diff-badge" class="badge-tag badge-difficulty-易">易</span>
           </div>
 
           <div class="quiz-top-controls">
-            <!-- 答錯展開詳解後，顯示在頂部列的「下一題」按鈕 -->
             <button id="next-btn" class="btn-top-next hidden" type="button">
               <span>下一題 (Enter)</span>
               <span aria-hidden="true">➔</span>
             </button>
 
-            <!-- 整體總倒數計時器 -->
             <div id="timer-container" class="timer-container" aria-label="剩餘時間">
               <span id="timer-icon" aria-hidden="true">⏱️</span>
               <span id="exam-timer-display">08:20</span>
@@ -222,14 +223,11 @@
           </div>
         </div>
 
-        <!-- 單元提示與題目標題 -->
         <span id="q-chapter-text" class="chapter-indicator"></span>
         <h2 id="question-title" class="question-title-text"></h2>
 
-        <!-- 選項按鈕區 (支援鍵盤 1, 2, 3, 4 與 Tab 切換) -->
         <div id="options-list" class="options-list" role="group" aria-label="作答選項"></div>
 
-        <!-- 答錯時直接在下方顯示詳解 -->
         <div id="explanation-panel" class="explanation-panel hidden" tabindex="-1">
           <h3>
             <span aria-hidden="true">📖</span>
@@ -240,18 +238,16 @@
       </section>
 
 
-      <!-- 3. 成績結算畫面 -->
+      <!-- ==================== 成績結算畫面 ==================== -->
       <section id="result-section" class="card hidden text-center" aria-label="測驗結算">
-        <h2 style="font-size: 1.6rem; margin-bottom: 8px;">🎉 測驗結算完成！</h2>
-        <p style="color: var(--text-muted);">本輪測驗詳細成果與作答數據已自動儲存至學習歷程：</p>
+        <h2 style="font-size: 1.6rem; margin-bottom: 6px;">🎉 測驗結算完成！</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">成績與逐題作答明細已自動儲存至「學習歷程與驗證」分頁。</p>
 
-        <!-- 滿分慶賀橫幅 (100%時顯示) -->
         <div id="perfect-banner" class="perfect-banner hidden">
           <h3>💯 恭喜達成 100% 滿分表現！</h3>
-          <p>本筆滿分紀錄已加入首頁「100% 滿分達成橫向紀錄列」，可隨時勾選列印驗證證明！</p>
+          <p>已自動收入「100% 滿分達成橫向紀錄」，可隨時勾選列印驗證證明。</p>
         </div>
 
-        <!-- 認證合格證書區塊 (通過認證時顯示) -->
         <div id="certificate-box" class="certificate-box hidden">
           <h3>🏆 環境永續知識認證合格證明</h3>
           <p style="margin: 10px 0; font-size: 1.05rem;">
@@ -265,7 +261,6 @@
           </p>
         </div>
 
-        <!-- 統計數據卡片 -->
         <div class="score-card-grid">
           <div class="score-stat-box">
             <span id="res-accuracy" class="stat-val">0%</span>
@@ -289,7 +284,6 @@
           </div>
         </div>
 
-        <!-- 本次測驗逐題回顧區 -->
         <div class="review-box-wrapper">
           <div class="review-header">
             <h3 style="font-size: 1.1rem;">📝 本次作答逐題回顧</h3>
@@ -300,7 +294,6 @@
           <div id="session-review-list" class="session-review-list"></div>
         </div>
 
-        <!-- 結算操作按鈕 -->
         <div class="result-actions-row">
           <button id="print-current-btn" class="btn-print-verify" style="flex: 1 1 200px;" type="button">
             🖨️ 列印本次成績驗證單
@@ -309,22 +302,22 @@
             再測一次同模式
           </button>
           <button id="back-home-btn" class="btn-secondary" type="button">
-            返回主選單與學習歷程
+            前往學習歷程分頁
           </button>
         </div>
       </section>
 
 
-      <!-- 4. 單筆歷史紀錄詳細回顧檢視畫面 -->
+      <!-- ==================== 單筆歷史紀錄詳細回顧畫面 ==================== -->
       <section id="history-detail-section" class="card hidden" aria-label="歷史作答回顧">
         <div class="quiz-top-bar">
           <div>
-            <h2 id="detail-title" style="font-size: 1.3rem;">📋 歷史測驗作答回顧</h2>
-            <p id="detail-subtitle" style="color: var(--text-muted); font-size: 0.92rem; margin-top: 4px;"></p>
+            <h2 id="detail-title" style="font-size: 1.25rem;">📋 歷史測驗作答回顧</h2>
+            <p id="detail-subtitle" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;"></p>
           </div>
           <div class="quiz-top-controls">
             <button id="detail-print-btn" class="btn-print-verify" type="button">🖨️ 列印此筆驗證單</button>
-            <button id="detail-back-btn" class="btn-secondary" type="button">← 返回學習歷程</button>
+            <button id="detail-back-btn" class="btn-secondary" type="button">← 返回列表</button>
           </div>
         </div>
 
@@ -335,12 +328,12 @@
 
   </div>
 
-  <!-- ==================== 專屬列印驗證證明單區域 (僅在列印 / 匯出 PDF 時顯示) ==================== -->
+  <!-- ==================== 專屬列印驗證證明單區域 ==================== -->
   <div id="print-sheet" class="print-only-sheet" aria-hidden="true">
     <div class="print-border-frame">
       <div class="print-header">
         <h1>環境永續題庫學習歷程與成績驗證紀錄單</h1>
-        <p class="print-sub">本機端無障礙題庫練習與認證系統 — 官方學習成效驗證憑證</p>
+        <p class="print-sub">題庫練習與認證系統 — 學習成效驗證憑證</p>
       </div>
 
       <div class="print-meta-grid">
@@ -377,7 +370,6 @@
     </div>
   </div>
 
-  <!-- 引入題目資料庫與主控邏輯 (完全離線本機端運行) -->
   <script src="questions.js"></script>
   <script src="app.js"></script>
 </body>
