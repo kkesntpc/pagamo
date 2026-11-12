@@ -1,0 +1,571 @@
+/* ==========================================================================
+   無障礙、色弱友善、日夜模式、RWD 響應式 CSS 樣式
+   符合 WCAG 2.1 AA 規範標準 (對比度 >= 4.5:1，大文字 >= 3:1)
+   ========================================================================== */
+
+:root {
+  /* 日間明亮模式 (Light Mode) */
+  --bg-primary: #f4f6f9;
+  --bg-card: #ffffff;
+  --bg-card-secondary: #f8fafc;
+  --text-main: #0f172a;       /* 高對比深色文字 */
+  --text-muted: #334155;      /* 次要文字 (>= 4.5:1) */
+  --border-color: #94a3b8;    /* 清晰可見的邊框線條 */
+  --border-focus: #0284c7;
+
+  /* 主題藍色 */
+  --brand-primary: #02569b;
+  --brand-primary-hover: #013e70;
+  --brand-text: #ffffff;
+
+  /* 無障礙高對比焦點環 (所有色弱皆可辨識的高明度黃) */
+  --focus-ring: #ffaa00;
+  --focus-outline-width: 3px;
+
+  /* 色弱友善狀態色 (搭配雙重指示符號，不用純紅純綠) */
+  /* 正確：深森林綠 + 淺青綠底 (帶有高辨識度深色文字) */
+  --state-correct-bg: #e6f4ea;
+  --state-correct-border: #137333;
+  --state-correct-text: #0b5125;
+  --state-correct-badge: #137333;
+
+  /* 錯誤：磚深紅 + 淺粉粉底 (文字為深暗紅) */
+  --state-wrong-bg: #fce8e6;
+  --state-wrong-border: #c5221f;
+  --state-wrong-text: #7c0a02;
+  --state-wrong-badge: #c5221f;
+
+  /* 難度標籤配色 */
+  --diff-easy-bg: #e0f2fe;
+  --diff-easy-text: #0369a1;
+  --diff-med-bg: #fef3c7;
+  --diff-med-text: #92400e;
+  --diff-hard-bg: #fce7f3;
+  --diff-hard-text: #9d174d;
+
+  /* 計時器色票 */
+  --timer-normal-bg: #e2e8f0;
+  --timer-normal-text: #0f172a;
+  --timer-alert-bg: #ffebee;
+  --timer-alert-text: #b71c1c;
+
+  /* 陰影 */
+  --shadow-card: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+/* 夜間暗色模式 (Dark Mode) */
+body.dark-mode {
+  --bg-primary: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-secondary: #273549;
+  --text-main: #f8fafc;
+  --text-muted: #cbd5e1;
+  --border-color: #475569;
+  --border-focus: #38bdf8;
+
+  --brand-primary: #38bdf8;
+  --brand-primary-hover: #7dd3fc;
+  --brand-text: #0f172a;
+
+  --focus-ring: #fbbf24;
+
+  --state-correct-bg: #143321;
+  --state-correct-border: #34a853;
+  --state-correct-text: #a8f5b8;
+  --state-correct-badge: #34a853;
+
+  --state-wrong-bg: #3f191a;
+  --state-wrong-border: #ea4335;
+  --state-wrong-text: #ffb4ab;
+  --state-wrong-badge: #ea4335;
+
+  --diff-easy-bg: #0c4a6e;
+  --diff-easy-text: #bae6fd;
+  --diff-med-bg: #78350f;
+  --diff-med-text: #fde68a;
+  --diff-hard-bg: #831843;
+  --diff-hard-text: #fbcfe8;
+
+  --timer-normal-bg: #334155;
+  --timer-normal-text: #f8fafc;
+  --timer-alert-bg: #5f1418;
+  --timer-alert-text: #ffb4ab;
+
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* 全域重設與字體 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  padding: 16px;
+}
+
+/* 無障礙鍵盤焦點外框 (Focus ring) */
+button:focus-visible,
+select:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: var(--focus-outline-width) solid var(--focus-ring) !important;
+  outline-offset: 3px !important;
+}
+
+/* 跳至主內容連結 (無障礙 Skip Link) */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 10px;
+  background: var(--brand-primary);
+  color: var(--brand-text);
+  padding: 8px 16px;
+  z-index: 100;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+}
+.skip-link:focus {
+  top: 10px;
+}
+
+/* 容器佈局 (RWD) */
+.app-container {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+  flex: 1;
+}
+
+/* 頂部導航列 */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 20px;
+}
+
+.brand-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-toggle-btn {
+  background: var(--bg-card-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.theme-toggle-btn:hover {
+  border-color: var(--border-focus);
+}
+
+/* 核心卡片容器 */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+  .card {
+    padding: 16px;
+  }
+  .brand-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* 模式選擇網格 */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.mode-btn {
+  background-color: var(--bg-card-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  padding: 14px 10px;
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.mode-btn:hover {
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
+}
+
+.mode-btn.active {
+  border-color: var(--brand-primary);
+  background-color: var(--brand-primary);
+  color: var(--brand-text);
+  font-weight: bold;
+}
+
+.mode-btn .mode-title {
+  font-size: 1.15rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.mode-btn .mode-desc {
+  font-size: 0.82rem;
+  opacity: 0.9;
+  display: block;
+}
+
+/* 難度篩選控制 */
+.filter-group {
+  margin: 16px 0 24px 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-group label {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card-secondary);
+  color: var(--text-main);
+  font-size: 0.95rem;
+}
+
+/* 主要操作按鈕 */
+.btn-action-primary {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  background-color: var(--brand-primary);
+  color: var(--brand-text);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+.btn-action-primary:hover {
+  background-color: var(--brand-primary-hover);
+}
+.btn-action-primary:active {
+  transform: scale(0.99);
+}
+
+.btn-secondary {
+  background-color: var(--bg-card-secondary);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-secondary:hover {
+  border-color: var(--border-focus);
+}
+
+/* 測驗進行頂部狀態列 */
+.quiz-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.quiz-meta-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.badge-difficulty-易 {
+  background-color: var(--diff-easy-bg);
+  color: var(--diff-easy-text);
+}
+.badge-difficulty-中 {
+  background-color: var(--diff-med-bg);
+  color: var(--diff-med-text);
+}
+.badge-difficulty-難 {
+  background-color: var(--diff-hard-bg);
+  color: var(--diff-hard-text);
+}
+
+/* 整體計時器樣式 */
+.timer-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background-color: var(--timer-normal-bg);
+  color: var(--timer-normal-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 1.1rem;
+  font-weight: 800;
+  border: 1px solid var(--border-color);
+}
+
+.timer-container.urgent {
+  background-color: var(--timer-alert-bg);
+  color: var(--timer-alert-text);
+  border-color: var(--timer-alert-text);
+  animation: pulse-border 1s infinite alternate;
+}
+
+@keyframes pulse-border {
+  from { border-color: var(--timer-alert-text); }
+  to { border-color: transparent; }
+}
+
+/* 題目卡片 */
+.question-title-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.chapter-indicator {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* 選項清單 */
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.option-item {
+  width: 100%;
+  text-align: left;
+  padding: 16px 20px;
+  font-size: 1.05rem;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.option-item:hover:not(:disabled) {
+  background-color: var(--bg-card-secondary);
+  border-color: var(--border-focus);
+}
+
+.option-item:disabled {
+  cursor: default;
+}
+
+/* 色弱友善狀態與文字符號標籤 */
+.option-item.correct {
+  background-color: var(--state-correct-bg) !important;
+  border-color: var(--state-correct-border) !important;
+  color: var(--state-correct-text) !important;
+  font-weight: bold;
+}
+
+.option-item.wrong {
+  background-color: var(--state-wrong-bg) !important;
+  border-color: var(--state-wrong-border) !important;
+  color: var(--state-wrong-text) !important;
+  text-decoration: line-through;
+}
+
+.option-status-icon {
+  font-weight: 900;
+  font-size: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 答錯詳解卡片 */
+.explanation-panel {
+  margin-top: 20px;
+  padding: 18px 20px;
+  background-color: var(--bg-card-secondary);
+  border-left: 6px solid var(--state-wrong-border);
+  border-radius: 6px;
+  border-top: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.explanation-panel h3 {
+  font-size: 1.15rem;
+  color: var(--state-wrong-text);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.explanation-content {
+  font-size: 1rem;
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+.btn-next-question {
+  margin-top: 16px;
+  width: 100%;
+}
+
+/* 成績歷史表格 */
+.history-section {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.history-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+.stats-table th, .stats-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.stats-table th {
+  background-color: var(--bg-card-secondary);
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.stats-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* 成績結算畫面板塊 */
+.score-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.score-stat-box {
+  background-color: var(--bg-card-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.score-stat-box .stat-val {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--brand-primary);
+  display: block;
+}
+
+.score-stat-box .stat-lbl {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  display: block;
+}
+
+/* 工具類別 */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
