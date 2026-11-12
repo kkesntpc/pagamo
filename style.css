@@ -238,17 +238,18 @@ input:focus-visible {
   margin-bottom: 20px;
 }
 
-/* 主頁籤分流導航列 */
+/* 主頁籤分流導航列 (分段膠囊導航設計) */
 .tabs-nav {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 6px;
   margin-bottom: 18px;
   box-shadow: var(--shadow-card);
+  width: 100%;
 }
 
 .tab-btn {
