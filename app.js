@@ -416,18 +416,28 @@
       btn.className = "option-item";
 
       let optLabel = "";
+      let displayHtml = "";
+      let ariaText = "";
+
       if (q.type === "TF") {
-        optLabel = optText;
+        optLabel = optText; // "O" 或 "X"
+        const isTrueOpt = String(optText).trim().toUpperCase() === "O";
+        displayHtml = isTrueOpt
+          ? `<strong>⭕ 是（O）</strong>`
+          : `<strong>❌ 否（X）</strong>`;
+        ariaText = isTrueOpt ? "是（O）" : "否（X）";
       } else {
         optLabel = String.fromCharCode(65 + idx);
+        displayHtml = `<strong>${optLabel}.</strong> ${optText}`;
+        ariaText = `選項 ${optLabel}：${optText}`;
       }
 
       btn.dataset.val = optLabel;
       btn.dataset.text = optText;
-      btn.setAttribute("aria-label", `選項 ${optLabel}：${optText}`);
+      btn.setAttribute("aria-label", ariaText);
 
       const contentSpan = document.createElement("span");
-      contentSpan.innerHTML = `<strong>${optLabel}.</strong> ${optText}`;
+      contentSpan.innerHTML = displayHtml;
 
       const iconSpan = document.createElement("span");
       iconSpan.className = "option-status-icon";
@@ -458,13 +468,14 @@
     const isCorrect = (normalizedUser === normalizedCorrect);
 
     // 找出正確選項完整文字
+    const formatTfLabel = (val) => val === "O" ? "是（O）" : (val === "X" ? "否（X）" : val);
     let correctFullText = normalizedCorrect;
     allButtons.forEach(b => {
       if (b.dataset.val === normalizedCorrect) {
-        correctFullText = q.type === "TF" ? normalizedCorrect : `${normalizedCorrect}. ${b.dataset.text}`;
+        correctFullText = q.type === "TF" ? formatTfLabel(normalizedCorrect) : `${normalizedCorrect}. ${b.dataset.text}`;
       }
     });
-    const userFullText = q.type === "TF" ? normalizedUser : `${normalizedUser}. ${userText}`;
+    const userFullText = q.type === "TF" ? formatTfLabel(normalizedUser) : `${normalizedUser}. ${userText}`;
 
     // 儲存本題作答日誌供後續回顧
     sessionLogs.push({

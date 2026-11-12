@@ -670,7 +670,7 @@ body.dark-mode .timer-status-tag {
   background-color: var(--state-wrong-bg) !important;
   border-color: var(--state-wrong-border) !important;
   color: var(--state-wrong-text) !important;
-  text-decoration: line-through;
+  font-weight: 600;
 }
 
 .option-status-icon {
